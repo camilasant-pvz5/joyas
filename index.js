@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { obtenerJoyas } = require('./consultas');
+const { obtenerJoyas } = require('./consulta');
 
 const app = express();
 
