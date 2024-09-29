@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 const format = require('pg-format');
-
 const pool = new Pool({
   host: 'localhost',
   user: 'postgres',
@@ -10,13 +9,26 @@ const pool = new Pool({
   port: 5432,
 });
 
+const prepararHateoas = (inventario) => {
+  const results = inventario.map((j) => {
+    return {
+      name: m.nombre,
+      href: `/inventario/${m.id}`,
+    };
+  }).slice(0, 4);  
+  const total = inventario.length;
+  return {
+    total,
+    results
+  }
+  return HATEOAS
+  ;
+};
 
 const obtenerJoyas = async ({ limits = 10, order_by = "id_ASC", page = 0 }) => {
 
   const { columna, orden } = order_by.split("_");
   const offset = page * limits;
-
-  
   let consulta = format(
     "SELECT * FROM inventario ORDER BY %s %s LIMIT %s OFFSET %s",
     columna,
@@ -33,16 +45,12 @@ const obtenerJoyas = async ({ limits = 10, order_by = "id_ASC", page = 0 }) => {
 const obtenerJoyasFiltro = async ({ precio_max, precio_min, categoria, metal }) => {
   let filtros = [];
   const values = [];
-
-
   const agregarFiltro = (campo, comparador, valor) => {
     values.push(valor);
     const { length } = filtros;
     filtros.push(`${campo} ${comparador} $${length + 1}`);
   };
-
-  
-  if (precio_max) agregarFiltro('precio', '<=', precio_max);
+if (precio_max) agregarFiltro('precio', '<=', precio_max);
   if (precio_min) agregarFiltro('precio', '>=', precio_min);
   if (categoria) agregarFiltro('categoria', '=', categoria);
   if (metal) agregarFiltro('metal', '=', metal);
@@ -58,5 +66,5 @@ const obtenerJoyasFiltro = async ({ precio_max, precio_min, categoria, metal }) 
   return inventario;
 };
 
-module.exports = { obtenerJoyas, obtenerJoyasFiltro };
+module.exports = { obtenerJoyas, obtenerJoyasFiltro, prepararHateoas };
 
