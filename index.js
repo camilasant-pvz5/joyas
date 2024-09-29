@@ -7,7 +7,7 @@ app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
 
-app.get('/joyas', async (req, res) => { 
+app.get("/joyas", async (req, res) => { 
 try {
     const queryStrings = req.query;
     const { results: inventario } = await obtenerJoyas(queryStrings); 
@@ -20,7 +20,7 @@ try {
 }}
 );
 
-app.get("/inventario/filtros", async (req, res) => {
+app.get("/joyas/filtros", async (req, res) => {
     try {
       const queryStrings = req.query;
       const inventario = await obtenerJoyasFiltro(queryStrings);
